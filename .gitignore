@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtualenv
+venv/
+.venv/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Storage upload (wajah & foto absensi) — simpan foldernya saja
+storage/*
+!storage/.gitkeep
+
+# Model dlib (file besar)
+*.dat
+
+# Log
+*.log
+logs/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

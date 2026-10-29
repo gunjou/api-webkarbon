@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: A4; margin: 1.5cm 2cm 2cm 2.5cm; }
+  body { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.5; color: #000; }
+  .kop { display: flex; align-items: center; border-bottom: 3px double #000; padding-bottom: 6px; }
+  .kop img { width: 80px; height: auto; margin-right: 12px; }
+  .kop .teks { flex: 1; text-align: center; line-height: 1.2; }
+  .kop .kab { font-size: 14pt; font-weight: bold; letter-spacing: 1px; }
+  .kop .kec { font-size: 14pt; font-weight: bold; letter-spacing: 4px; }
+  .kop .desa { font-size: 20pt; font-weight: bold; }
+  .kop .alamat { font-size: 9pt; font-style: italic; }
+  .judul { text-align: center; margin-top: 18px; }
+  .judul .nama { font-weight: bold; text-decoration: underline; }
+  .judul .nomor { margin-top: 0; }
+  p { text-align: justify; text-indent: 1.25cm; margin: 10px 0; }
+  table.subjek { margin: 8px 0 8px 1.25cm; border-collapse: collapse; }
+  table.subjek td { vertical-align: top; padding: 1px 4px; }
+  table.subjek td.label { width: 4.5cm; }
+  .ttd { width: 7.5cm; margin-left: auto; margin-top: 24px; text-align: center; }
+  .ttd .nama { margin-top: 70px; font-weight: bold; text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="kop">
+  {% if logo_uri %}<img src="{{ logo_uri }}" alt="Logo">{% endif %}
+  <div class="teks">
+    <div class="kab">KABUPATEN {{ desa.kabupaten | upper }}</div>
+    <div class="kec">KECAMATAN {{ desa.kecamatan | upper }}</div>
+    <div class="desa">DESA {{ desa.nama | upper }}</div>
+    <div class="alamat">
+      {{ desa.alamat }}{% if desa.kode_pos %} Kode Pos {{ desa.kode_pos }}{% endif %}<br>
+      {% if desa.email %}email: {{ desa.email }}{% endif %}
+      {% if desa.website %} &middot; website: {{ desa.website }}{% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="judul">
+  <div class="nama">{{ judul }}</div>
+  <div class="nomor">Nomor : {{ nomor_surat or "........ (draft)" }}</div>
+</div>
+
+{% if pakai_subjek %}
+<p>Yang bertandatangan di bawah ini Kepala Desa {{ desa.nama }}, Kecamatan {{ desa.kecamatan }},
+Kabupaten {{ desa.kabupaten }}, menerangkan dengan sebenarnya bahwa:</p>
+
+<table class="subjek">
+  <tr><td class="label">Nama</td><td>:</td><td>{{ subjek.nama | upper }}</td></tr>
+  <tr><td class="label">NIK</td><td>:</td><td>{{ subjek.nik }}</td></tr>
+  <tr><td class="label">Tempat/Tgl. Lahir</td><td>:</td><td>{{ subjek.tempat_lahir }}, {{ subjek.tgl_lahir | tanggal }}</td></tr>
+  <tr><td class="label">Jenis Kelamin</td><td>:</td><td>{{ subjek.jenis_kelamin | jk }}</td></tr>
+  <tr><td class="label">Agama</td><td>:</td><td>{{ subjek.agama or "-" }}</td></tr>
+  <tr><td class="label">Status Perkawinan</td><td>:</td><td>{{ subjek.status_kawin or "-" }}</td></tr>
+  <tr><td class="label">Pekerjaan</td><td>:</td><td>{{ subjek.pekerjaan or "-" }}</td></tr>
+  <tr><td class="label">Kewarganegaraan</td><td>:</td><td>{{ subjek.kewarganegaraan or "Indonesia" }}</td></tr>
+  <tr><td class="label">Alamat</td><td>:</td><td>{{ subjek.alamat_lengkap }}</td></tr>
+</table>
+{% endif %}
+
+{{ isi }}
+
+{% if keperluan %}
+<p>Surat Keterangan ini diberikan kepada yang bersangkutan sebagai salah satu syarat {{ keperluan }}.</p>
+{% endif %}
+
+{% if pakai_subjek %}
+<p>Demikian Surat Keterangan ini kami buat dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.</p>
+{% endif %}
+
+<div class="ttd">
+  {{ desa.nama }}, {{ tanggal_surat | tanggal }}<br>
+  {% if penandatangan and penandatangan.mode == "AN" %}
+    a.n Kepala Desa {{ desa.nama }}<br>{{ penandatangan.jabatan }}
+  {% else %}
+    Kepala Desa {{ desa.nama }}
+  {% endif %}
+  <div class="nama">{{ (penandatangan.nama if penandatangan else "") | upper }}</div>
+</div>
+
+</body>
+</html>
