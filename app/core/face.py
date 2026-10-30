@@ -25,11 +25,15 @@ MARGIN_CROP = 0.4          # tambahan area di sekitar kotak wajah (40%)
 def _load():
     global _models
     if _models is None:
-        import importlib.resources as res
+        import importlib.util
+        from pathlib import Path
 
         import dlib  # noqa: import berat, sengaja lazy
 
-        base = res.files("face_recognition_models") / "models"
+        # Cari folder paket tanpa meng-import-nya: __init__ face_recognition_models
+        # butuh pkg_resources (setuptools) yang tidak selalu ada di venv Python 3.12.
+        spec = importlib.util.find_spec("face_recognition_models")
+        base = Path(spec.submodule_search_locations[0]) / "models"
         _models = {
             "detector": dlib.get_frontal_face_detector(),
             "shape": dlib.shape_predictor(str(base / "shape_predictor_5_face_landmarks.dat")),
